@@ -67,12 +67,12 @@ d3.gantt = function() {
 	yAxis = d3.svg.axis().scale(y).orient("left").tickSize(0);
     };
     
-    function gantt(tasks) {
+    function gantt(tasks,id) {
 	
 	initTimeDomain(tasks);
 	initAxis();
 	
-	var svg = d3.select("body")
+	var svg = d3.select(id)
 	.append("svg")
 	.attr("class", "chart")
 	.attr("width", width + margin.left + margin.right)
