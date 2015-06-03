@@ -3,7 +3,7 @@
  * @version 2.1
  */
 
-d3.gantt = function() {
+d3.gantt = function(height,width) {
     var FIT_TIME_DOMAIN_MODE = "fit";
     var FIXED_TIME_DOMAIN_MODE = "fixed";
     
@@ -18,8 +18,8 @@ d3.gantt = function() {
     var timeDomainMode = FIT_TIME_DOMAIN_MODE;// fixed or fit
     var taskTypes = [];
     var taskStatus = [];
-    var height = document.body.clientHeight - margin.top - margin.bottom-5;
-    var width = document.body.clientWidth - margin.right - margin.left-5;
+    var height = height - margin.top - margin.bottom-5;
+    var width = width - margin.right - margin.left-5;
 
     var tickFormat = "%H:%M";
 
@@ -72,6 +72,14 @@ d3.gantt = function() {
 	initTimeDomain(tasks);
 	initAxis();
 	
+	var tooltip = d3.select("body")
+    .append("div")
+    .style("position", "absolute")
+    .style("z-index", "10")
+    .attr('class','gantt-tooltip')
+    .style("visibility", "hidden")
+    .text("a simple tooltip");
+
 	var svg = d3.select(id)
 	.append("svg")
 	.attr("class", "chart")
@@ -93,6 +101,12 @@ d3.gantt = function() {
 	     return taskStatus[d.status];
 	     }) 
 	 .attr("y", 0)
+	 .on("mouseover", function(d){
+							 	tooltip.html("<html>"+d.startDate+"<br>"+d.endDate+"<br>"+d.status+"</html>");
+							 	return tooltip.style("visibility", "visible");
+ 								})
+	 .on("mousemove", function(){return tooltip.style("top",(d3.event.pageY-10)+"px").style("left",(d3.event.pageX+10)+"px");})
+	 .on("mouseout", function(){return tooltip.style("visibility", "hidden");})
 	 .attr("transform", rectTransform)
 	 .attr("height", function(d) { return y.rangeBand(); })
 	 .attr("width", function(d) { 
